@@ -9,10 +9,13 @@ let source;
 let distortion;
 let data;
 let connected = false;
+this.gain;
 
 this.clip = 1;
 
-this.size = 1024;
+size = 1024;
+
+this.size = size;
 this.length;
 this.data;
 
@@ -26,7 +29,7 @@ this.console = 'WAITING FOR INPUT'
 
 this.player;
 
-	this.connect = function( _size = 1024 ){
+	this.connect = function( _size = size ){
 
 		scope.size = _size;
 
@@ -80,13 +83,18 @@ this.player;
 			scope.player = document.getElementById("audio_player");
 			var source = audio.createMediaElementSource( scope.player );
 
+			scope.gain = audio.createGain();
+
+			source.connect( scope.gain );
+// 			scope.gain.connect(audio.destination);
+			scope.gain.gain.value = 0.7
 			source.connect( audio.destination );
 
-			distortion = audio.createWaveShaper();
+// 			distortion = audio.createWaveShaper();
 
-			analyser = audio.createAnalyser( source )
+			analyser = audio.createAnalyser( scope.gain )
 			
-			source.connect( analyser );
+			scope.gain.connect( analyser );
 
 			analyser.fftSize = scope.size;
 
@@ -116,9 +124,11 @@ this.player;
 
 // 		return Math.floor( ( exp ) * scope.channel.length );
 
-		x = i / scope.clip;
+		let x = i / scope.clip;
 
-		return Math.floor( ( 1 - Math.pow( 1 - x, 6 ) ) * scope.channel.length );
+		x = x === 1 ? 1 : 1 - Math.pow(4, -10 * x)
+
+		return Math.floor( x * scope.channel.length );
 
 	}
 
@@ -157,13 +167,17 @@ this.player;
 
 				}
 
-				let x = '2+' + ( i ) + 'p'
+				let x =  ( i ) + 'p'
+
+// 				ui.style = 1;
 
 // 				ui.sprite( 0,0, 1,1, x, '1.0-2-2p', 1, -data[i] );
 
 // 				ui.sprite( 0,0, 1,1, x, '1.0-2', 1, 2 );
 
 // 				ui.sprite( 0,0, 1,1, '2', '1.0-1', scope.clip, 1 )
+
+// 				ui.style = 0;
 
 			}
 

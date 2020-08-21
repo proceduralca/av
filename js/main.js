@@ -22,7 +22,7 @@ audio_file.onchange = function(){
 };
 
 let scene, camera, renderer, ui, fft, control;
-let mesh, master, moon;
+let mesh, master, moon, wireframe, grid;
 
 let palette = [];
 
@@ -38,6 +38,11 @@ let color;
 let frame = 0;
 let orbit;
 
+let offset;
+let offsetTarget;
+let up;
+let upTarget;
+
 function init(){
 
 	scene = new THREE.Scene();
@@ -48,7 +53,6 @@ function init(){
 
 		camera.up = new THREE.Vector3( 0,0,1 );
 		camera.position.y = 7;
-// 		camera.position.z = 20;
 
 		camera.lookAt( 0, 0, 0 );
 		camera.fov   = 60;
@@ -95,7 +99,7 @@ function init(){
 	});
 	
 	material.transparent = true;
-	material.opacity = 0.8;
+	material.opacity = 0.9;
 // 	material.blending = THREE.AdditiveBlending;
 	
 	mesh = new THREE.Mesh( geometry, material );
@@ -110,6 +114,7 @@ function init(){
 
 	);
 
+	moon.material.shading = THREE.FlatShading;
 	moon.position.copy( geometry.vertices[ 11 ] );
 	moon.position.multiplyScalar( 3 );
 
@@ -117,6 +122,20 @@ function init(){
 
 	orbit = new THREE.Vector3( 0,1,1 );
 	orbit.normalize();
+
+	wireframe = new THREE.Mesh(
+
+		moon.geometry.clone(),
+		new THREE.MeshLambertMaterial( {
+
+			color: palette[1],
+			wireframe: true,
+		
+			} )
+
+		);
+
+	scene.add( wireframe )
 
 	let light = new THREE.HemisphereLight(  0xffffff, color );
 
@@ -152,10 +171,25 @@ function init(){
 
 			document.body.appendChild( link );
 
-			ui.button('', 16, 72*2, window.innerWidth-32, 48, function(){
+			ui.button('', 16, 72*2, window.innerWidth-32, 48, function(){});
 
-			});
+			ui.button('IG MODE ( BROKEN )', '2', '1.0-8', 120, 48, function(){
+			
+			let w = ( window.innerWidth < 360 ) ? window.innerWidth : 360;
+			resize( w, w );
 
+			let x = window.innerWidth/2-w/2
+			let y = window.innerHeight/2-w/2
+
+			let canvas = document.getElementById('UI');
+
+			renderer.domElement.style.top = y + 'px'
+			renderer.domElement.style.left = x + 'px'
+
+			canvas.style.top = y + 'px'
+			canvas.style.left = x + 'px'
+
+			} );
 
 // 		fft.connect();
 		resize();
@@ -182,10 +216,10 @@ function pleaseClick( id ) {
 
 }
 
-function resize(){
+function resize( _width = window.innerWidth, _height = window.innerHeight){
 	
-	let width	= window.innerWidth;
-	let height	= window.innerHeight;
+	let width	= _width;
+	let height	= _height;
 
 	renderer.clear();
 	renderer.setSize( width, height );
@@ -221,6 +255,8 @@ function main(){
 		moon.position.applyAxisAngle( camera.up, 0.02 );
 		moon.position.applyAxisAngle( orbit, 0.02 );
 
+		wireframe.position.copy( moon.position );
+
 		camera.position.applyAxisAngle( camera.up, 0.01 );
 		camera.lookAt( mesh.position );
 				
@@ -234,13 +270,6 @@ function visuals(){
 	if( fft.active ){
 
 		fft.update();
-
-		moon.position.applyAxisAngle( camera.up, 0.02 );
-		moon.position.applyAxisAngle( orbit, 0.02 );
-
-// 		moon.rotateX( ( fft.channel[3] / 128 ) * 0.1 );
-// 		moon.rotateY( ( fft.channel[6] / 128 ) * 0.1 );
-// 		moon.rotateZ( ( fft.channel[1] / 128 ) * 0.1 );
 
 		for( let i = 0; i < master.vertices.length; i++ ){
 
@@ -256,7 +285,11 @@ function visuals(){
 
 		}
 
+// 		wireframe.geometry.copy( moon.geometry );
+		let s = Math.floor( fft.channel[11]/20 );
+		wireframe.scale.set( s, s, s );
 
+		wireframe.rotateX( 0.1 );
 		let l = Math.floor( fft.channel[1] / 20 );
 
 		for( let i = 0; i < l; i++ ){
@@ -267,8 +300,8 @@ function visuals(){
 
 		ui.print( String.fromCharCode(
 
-			Math.floor( 1+fft.channel[0]  + 650),
-			Math.floor( 1+fft.channel[5] + 650+90),
+			Math.floor( 1+fft.channel[0] / 10  + 650),
+			Math.floor( 1+fft.channel[5] / 20 + 650+90),
 			Math.floor( 1+fft.channel[8] /20 + 650+20 ),
 
 		), '2', '4');
@@ -276,7 +309,7 @@ function visuals(){
 		let string = '❄';
 		let code = string.charCodeAt( 0 );
 
-		ui.print( String.fromCharCode( code + Math.floor( fft.channel[7] / 5 ) ), '1.0-3', '1.0-3', 2);
+		ui.print( String.fromCharCode( code + Math.floor( fft.channel[5] / 10 ) ), '1.0-3', '1.0-3', 2);
 
 		ui.style = 1;
 
@@ -284,7 +317,7 @@ function visuals(){
 
 		code = ('☿').charCodeAt( 0 );
 		
-		ui.print( String.fromCharCode( code + Math.floor( fft.channel[7] / 20 ) ) , '1.0-6', '1', 6 );
+		ui.print( String.fromCharCode( code + Math.floor( fft.channel[11] / 10 ) ) , '1.0-6', '1', 6 );
 		
 		ui.style = 0;
 
