@@ -13,7 +13,7 @@ this.gain;
 
 this.clip = 1;
 
-size = 1024;
+size = 512;
 
 this.size = size;
 this.length;
