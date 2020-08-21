@@ -1,7 +1,7 @@
 // Procedural.ca!
 
 window.onload = init;
-window.onresize = resize;
+window.onresize = function(){ resize() };
 window.fullscreenchange = resize;
 window.focus = resize;
 
@@ -173,19 +173,19 @@ function init(){
 
 			ui.button('IG MODE ( BROKEN )', '2', '1.0-8', 120, 48, function(){
 			
-			let w = ( window.innerWidth < 360 ) ? window.innerWidth : 360;
-			resize( w, w );
+				let w = ( window.innerWidth < 360 ) ? window.innerWidth : 360;
+				resize( w, w );
 
-			let x = window.innerWidth/2-w/2
-			let y = window.innerHeight/2-w/2
+				let x = window.innerWidth/2-w/2
+				let y = window.innerHeight/2-w/2
 
-			let canvas = document.getElementById('UI');
+				let canvas = document.getElementById('UI');
 
-			renderer.domElement.style.top = y + 'px'
-			renderer.domElement.style.left = x + 'px'
+				renderer.domElement.style.top = y + 'px'
+				renderer.domElement.style.left = x + 'px'
 
-			canvas.style.top = y + 'px'
-			canvas.style.left = x + 'px'
+				canvas.style.top = y + 'px'
+				canvas.style.left = x + 'px'
 
 			} );
 
