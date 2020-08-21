@@ -362,16 +362,12 @@ function UI( url, unit = 16, offx = 0, offy = 0 ) {
 		}
 
 // 		PAD HITBOX DEBUG
-
-		if( HITBOX ){
 			
 			context.drawImage( font[ scope.style ], 0, 0, 1, 1, x+1, y, w-1, 1 );
 			context.drawImage( font[ scope.style ], 0, 0, 1, 1, x+1, y+h, w-1, 1 );
 
 			context.drawImage( font[ scope.style ], 0, 0, 1, 1, x+1, y, 1, h );
 			context.drawImage( font[ scope.style ], 0, 0, 1, 1, x+w-1, y, 1, h );
-
-		}
 
 		scope.encode( c, x + w/2 - scope.col/2, y+h/2 - scope.row/2 );
 

@@ -12,7 +12,7 @@ let connected = false;
 
 this.clip = 1;
 
-this.size;
+this.size = 2048;
 this.length;
 this.data;
 
@@ -30,45 +30,76 @@ this.console = 'WAITING FOR INPUT'
 
 		if( navigator.mediaDevices ){
 
-		navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-		.then(function(stream) {
+			navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+			.then(function(stream) {
 
-				audio = new ( window.AudioContext || window.webkitAudioContext )();
+					audio = new ( window.AudioContext || window.webkitAudioContext )();
 
-				distortion = audio.createWaveShaper();
+					distortion = audio.createWaveShaper();
 
-				analyser = audio.createAnalyser( source )
+					analyser = audio.createAnalyser( source )
 
-				source = audio.createMediaStreamSource( stream );
-				
-				source.connect( analyser );
+					source = audio.createMediaStreamSource( stream );
+
+					source.connect( analyser );
+
+	// 				analyser.connect( audio.destination );
+
+					analyser.fftSize = scope.size;
+
+					scope.length = analyser.frequencyBinCount;
+
+					data = new Uint8Array( analyser.frequencyBinCount );
+
+					scope.active = true;
+					scope.console = 'LISTENING :)'
+					connected = true;
+
+			})
+			.catch(function(err) {
+
+					scope.console = 'INPUT ERROR :('
+
+			});
+
+		}
+		else{
+
+			scope.console = 'FEATURE NOT SUPPORTED'
+
+		}
+
+	}
+
+	this.load = function(){
+
+			audio = new ( window.AudioContext || window.webkitAudioContext )();
+
+			var audioElement = document.getElementById("audio_player");
+			var source = audio.createMediaElementSource(audioElement);
+			source.connect(audio.destination);
+
+
+			distortion = audio.createWaveShaper();
+
+			analyser = audio.createAnalyser( source )
+
+// 			source = audio.createMediaStreamSource( stream );
+
+			source.connect( analyser );
 
 // 				analyser.connect( audio.destination );
 
-				analyser.fftSize = scope.size;
+			analyser.fftSize = scope.size;
 
-				scope.length = analyser.frequencyBinCount;
+			scope.length = analyser.frequencyBinCount;
 
-				data = new Uint8Array( analyser.frequencyBinCount );
+			data = new Uint8Array( analyser.frequencyBinCount );
 
-				scope.active = true;
-				scope.console = 'LISTENING :)'
-				connected = true;
-
-		})
-		.catch(function(err) {
-
-				scope.console = 'INPUT ERROR :('
-
-		});
-
-  	}
-  	else{
-
-  		scope.console = 'FEATURE NOT SUPPORTED'
-
-  	}
-
+			scope.active = true;
+			scope.console = 'LISTENING :)'
+			connected = true;
+		
 	}
 
 	this.autoClip = function( i, n ){

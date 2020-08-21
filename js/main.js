@@ -5,10 +5,28 @@ window.onresize = resize;
 window.fullscreenchange = resize;
 window.focus = resize;
 
-let scene, camera, renderer, ui, fft;
+audio_file = document.getElementById( 'audio_file' )
+
+console.log( audio_file )
+
+audio_file.onchange = function(){
+
+  let files = this.files;
+  let file = URL.createObjectURL(files[0]); 
+              audio_player.src = file;
+
+  audio_player.play();
+
+	fft.load()
+
+};
+
+let scene, camera, renderer, ui, fft, control;
 let mesh, master, moon;
 
 let palette = [];
+
+let state = 0;
 
 palette[0] = 0xff2e62 // HIGHLIGHT
 palette[1] = 0x7c3f58 // SHADOW
@@ -52,6 +70,9 @@ function init(){
 		renderer.setClearColor( color );
 		renderer.domElement.id = 'RENDERER';
 		document.body.appendChild( renderer.domElement );
+
+	control = new Control();
+	control.connect();
 
 	ui = new UI( './img/unifont.min.png', 16, 32, 64 );
 
@@ -104,12 +125,60 @@ function init(){
 
 	ui.onload = function(){
 
-		fft.connect();
+			ui.print('SELECT INPUT', '1', '1',)
+			ui.print('  > MIC', '1', '4',)
+			ui.print('  > MP3', '1', '8+8p',)
+			
+			ui.button('', 16, 72, window.innerWidth-32, 48, function(){
+
+				fft.connect();
+
+			});
+
+			let link = document.createElement('a');
+
+			link.id = 'audio_link'
+			link.href = '#'
+			link.style.position = 'fixed';
+			link.style.top = ( 16*8-8 ) + 'px';
+			link.style.left = 16 + 'px';
+			link.style.zIndex = 100;
+			link.style.display = 'block';
+
+			link.style.width = window.innerWidth-32 + 'px';
+			link.style.height = 48 + 'px';
+
+			link.onclick = function(){ pleaseClick( 'audio_file' ); }
+
+			document.body.appendChild( link );
+
+			ui.button('', 16, 72*2, window.innerWidth-32, 48, function(){
+
+			});
+
+
+// 		fft.connect();
 		resize();
 		main();
 
 	}
 
+}
+
+
+function pleaseClick( id ) {
+
+   var element = document.getElementById( id );
+
+   if( element && document.createEvent ) {
+
+      var event = document.createEvent("MouseEvents");
+      event.initEvent("click", true, false);
+      element.dispatchEvent( event );
+
+		let link = document.getElementById( 'audio_link' );
+		document.body.removeChild( link );
+   }
 
 }
 
@@ -130,17 +199,37 @@ function resize(){
 
 function main(){
 
-	ui.clear();
 	window.requestAnimationFrame( main );
 
-	ui.preventRedraw();
 
-	ui.print( '_', '1', '2' );
+	if( fft.active ){
 
-	ui.print('新 事 業 _', '1', '1.0-2', 1 );
+		ui.clear();
+
+		ui.preventRedraw();
+
+		ui.print( '_', '1', '2' );
+
+		ui.print('新 事 業 _', '1', '1.0-2', 1 );
+
+		visuals();
+
+	}
+
+	ui.update( control.touches );
+
+		moon.position.applyAxisAngle( camera.up, 0.02 );
+		moon.position.applyAxisAngle( orbit, 0.02 );
+
+		camera.position.applyAxisAngle( camera.up, 0.01 );
+		camera.lookAt( mesh.position );
+				
+		renderer.render( scene, camera );
 
 
-	ui.update();
+}
+
+function visuals(){
 
 	if( fft.active ){
 
@@ -193,17 +282,15 @@ function main(){
 
 		ui.print( '手 続 き 型', '1', '0.66', 2 );
 
-		code = ('☿').charCodeAt( 0 )
-		ui.print( String.fromCharCode( code + Math.floor( fft.channel[10] / 20 ) ) , '1.0-6', '1', 6 );
+		code = ('☿').charCodeAt( 0 );
+		
+		ui.print( String.fromCharCode( code + Math.floor( fft.channel[7] / 20 ) ) , '1.0-6', '1', 6 );
+		
 		ui.style = 0;
-
-		}
 
 		mesh.geometry.verticesNeedUpdate = true;
 
-		camera.position.applyAxisAngle( camera.up, 0.01 );
-		camera.lookAt( mesh.position );
-				
-		renderer.render( scene, camera );
+	}
+	
 
 }
