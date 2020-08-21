@@ -1,27 +1,44 @@
 body{
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  image-rendering: pixelated;
-  font-size: 11px;
-  background: #ffffff;
-  opacity: 1;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	image-rendering: pixelated;
+	font-size: 11px;
+	background: #ffffff;
+	opacity: 1;
 }
 
+a{
+
+	padding: 0;
+	margin: 0;
+	background: transparent;
+	border-style: none;
+	z-index: 200;
+
+}
 img{ border-style: none }
 
 #UI{
 	
-  image-rendering: pixelated;
-  z-index: 99;
-  position: fixed;
-  mix-blend-mode: hard-light;
+	image-rendering: pixelated;
+	z-index: 99;
+	position: fixed;
+	mix-blend-mode: hard-light;
 
 }
 
 #RENDERER{
 
-  z-index: 0;
-  position: fixed;
+	z-index: 0;
+	position: fixed;
+
+}
+
+#audio_player, #audio_file{
+
+	position: fixed;
+	z-index: 100;
+	display: none;
 
 }
