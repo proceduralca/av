@@ -78,14 +78,10 @@ function init(){
 	control = new Control();
 	control.connect();
 
-	ui = new UI( './img/unifont.min.png', 16, 32, 64 );
-
 // 	ui.col = 12;
 // 	ui.row = 20;
 
 	fft = new FFT();
-
-	resize();
 
 	let geometry = new THREE.IcosahedronGeometry( 1, 0 );
 
@@ -141,6 +137,8 @@ function init(){
 
 		scene.add( mesh )
 		scene.add( light )
+
+	ui = new UI( './img/unifont.min.png', 16, 32, 64 );
 
 	ui.onload = function(){
 
