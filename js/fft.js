@@ -12,7 +12,7 @@ let connected = false;
 
 this.clip = 1;
 
-this.size = 2048;
+this.size = 1024;
 this.length;
 this.data;
 
@@ -24,7 +24,9 @@ this.averages	= []
 this.active  = false;
 this.console = 'WAITING FOR INPUT'
 
-	this.connect = function( _size = 2048 ){
+this.player;
+
+	this.connect = function( _size = 1024 ){
 
 		scope.size = _size;
 
@@ -75,20 +77,16 @@ this.console = 'WAITING FOR INPUT'
 
 			audio = new ( window.AudioContext || window.webkitAudioContext )();
 
-			var audioElement = document.getElementById("audio_player");
-			var source = audio.createMediaElementSource(audioElement);
-			source.connect(audio.destination);
+			scope.player = document.getElementById("audio_player");
+			var source = audio.createMediaElementSource( scope.player );
 
+			source.connect( audio.destination );
 
 			distortion = audio.createWaveShaper();
 
 			analyser = audio.createAnalyser( source )
-
-// 			source = audio.createMediaStreamSource( stream );
-
+			
 			source.connect( analyser );
-
-// 				analyser.connect( audio.destination );
 
 			analyser.fftSize = scope.size;
 
@@ -120,7 +118,7 @@ this.console = 'WAITING FOR INPUT'
 
 		x = i / scope.clip;
 
-		return Math.floor( ( 1 - Math.pow( 1 - x, 2 ) ) * scope.channel.length );
+		return Math.floor( ( 1 - Math.pow( 1 - x, 6 ) ) * scope.channel.length );
 
 	}
 
