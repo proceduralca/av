@@ -184,7 +184,9 @@ this.player;
 
 			for( let i = 0; i < scope.channel.length; i++ ){
 				
-				scope.channel[i] /= averages[i];
+				let average = ( averages[i] === 0 ) ? 1 : average;
+				
+				scope.channel[i] /= average;
 
 				ui.sprite( 0,0, 1,1, '2+' + i*12 + 'p', '1.0-3-2p', 3, -scope.channel[i] );
 				ui.sprite( 0,0, 1,1, '2+' + i*12 + 'p', '1.0-3+2p', 3, 2 );
