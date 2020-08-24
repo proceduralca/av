@@ -57,7 +57,7 @@ this.player;
 					scope.active = true;
 
 					scope.console = 'LISTENING :)'
-					
+
 					connected = true;
 
 			})
@@ -76,7 +76,9 @@ this.player;
 
 	}
 
-	this.load = function(){
+	this.load = function( _size = scope.size ){
+
+			scope.size = _size;
 
 			audio = new ( window.AudioContext || window.webkitAudioContext )();
 
@@ -119,11 +121,11 @@ this.player;
 
 	this.bucket = function( i ){
 
-// 		let exp = 1 - ( ( i / scope.clip ) * ( i / scope.clip ) );
-
-// 		return Math.floor( ( exp ) * scope.channel.length );
+		// Returns a channel position based on the channel length.
 
 		let x = i / scope.clip;
+
+		// The position is eased exponetially in order to capture low frequency details.
 
 		x = x === 1 ? 1 : 1 - Math.pow(4, -10 * x)
 

@@ -17,7 +17,7 @@ audio_file.onchange = function(){
 
   audio_player.play();
 
-	fft.load()
+	fft.load( 256 );
 
 };
 
