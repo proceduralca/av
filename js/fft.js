@@ -184,7 +184,7 @@ this.player;
 
 			for( let i = 0; i < scope.channel.length; i++ ){
 				
-				let average = ( averages[i] === 0 ) ? 1 : average;
+				let average = ( averages[i] === 0 ) ? 1 : averages[i];
 				
 				scope.channel[i] /= average;
 
