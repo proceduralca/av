@@ -3,7 +3,7 @@ function FFT(){
 const scope = this;
 
 let audio;
-let analyser;
+this.analyser;
 let stream;
 let source;
 let distortion;
@@ -42,17 +42,17 @@ this.player;
 
 					distortion = audio.createWaveShaper();
 
-					analyser = audio.createAnalyser( source )
+					scope.analyser = audio.createAnalyser( source )
 
 					source = audio.createMediaStreamSource( stream );
 
-					source.connect( analyser );
+					source.connect( scope.analyser );
 
-					analyser.fftSize = scope.size;
+					scope.analyser.fftSize = scope.size;
 
-					scope.length = analyser.frequencyBinCount;
+					scope.length = scope.analyser.frequencyBinCount;
 
-					data = new Uint8Array( analyser.frequencyBinCount );
+					data = new Uint8Array( scope.analyser.frequencyBinCount );
 
 					scope.active = true;
 
@@ -93,15 +93,15 @@ this.player;
 
 // 			distortion = audio.createWaveShaper();
 
-			analyser = audio.createAnalyser( scope.gain )
+			scope.analyser = audio.createAnalyser( scope.gain )
 			
-			scope.gain.connect( analyser );
+			scope.gain.connect( scope.analyser );
 
-			analyser.fftSize = scope.size;
+			scope.analyser.fftSize = scope.size;
 
-			scope.length = analyser.frequencyBinCount;
+			scope.length = scope.analyser.frequencyBinCount;
 
-			data = new Uint8Array( analyser.frequencyBinCount );
+			data = new Uint8Array( scope.analyser.frequencyBinCount );
 
 			scope.active = true;
 			scope.console = 'LISTENING :)'
@@ -143,11 +143,11 @@ this.player;
 
 		if( connected ){
 
-      		analyser.getByteFrequencyData( data );
+      		scope.analyser.getByteFrequencyData( data );
 
 			scope.data = data;
 
-			analyser.smoothingTimeConstant = 0.8;
+			scope.analyser.smoothingTimeConstant = 0.8;
 
 			ui.preventRedraw();
 
