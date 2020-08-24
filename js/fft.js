@@ -9,11 +9,11 @@ let source;
 let distortion;
 let data;
 let connected = false;
-this.gain;
 
+this.gain;
 this.clip = 1;
 
-size = 512;
+let size = 512;
 
 this.size = size;
 this.length;
@@ -48,8 +48,6 @@ this.player;
 
 					source.connect( analyser );
 
-	// 				analyser.connect( audio.destination );
-
 					analyser.fftSize = scope.size;
 
 					scope.length = analyser.frequencyBinCount;
@@ -57,7 +55,9 @@ this.player;
 					data = new Uint8Array( analyser.frequencyBinCount );
 
 					scope.active = true;
+
 					scope.console = 'LISTENING :)'
+					
 					connected = true;
 
 			})
@@ -84,7 +84,6 @@ this.player;
 			var source = audio.createMediaElementSource( scope.player );
 
 			scope.gain = audio.createGain();
-
 			source.connect( scope.gain );
 // 			scope.gain.connect(audio.destination);
 			scope.gain.gain.value = 0.7

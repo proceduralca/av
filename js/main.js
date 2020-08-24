@@ -148,7 +148,7 @@ function init(){
 			
 			ui.button('', 16, 72, window.innerWidth-32, 48, function(){
 
-				fft.connect();
+				fft.connect( 256 );
 
 			});
 
